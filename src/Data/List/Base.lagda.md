@@ -168,11 +168,14 @@ product : List Nat → Nat
 product [] = 1
 product (x ∷ xs) = x * product xs
 
+_⋉_ : List A → List A → List A
+[] ⋉ ys = ys
+(x ∷ xs) ⋉ ys = xs ⋉ (x ∷ ys)
+
+infixr 8 _⋉_
+
 reverse : List A → List A
-reverse = go [] where
-  go : List A → List A → List A
-  go acc [] = acc
-  go acc (x ∷ xs) = go (x ∷ acc) xs
+reverse xs = xs ⋉ []
 
 _∷r_ : List A → A → List A
 xs ∷r x = xs ++ (x ∷ [])

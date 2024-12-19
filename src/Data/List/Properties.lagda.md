@@ -141,6 +141,36 @@ ap-∷ : ∀ {x y : A} {xs ys : List A}
 ap-∷ x≡y xs≡ys i = x≡y i ∷ xs≡ys i
 ```
 
+## Reversing lists
+
+```agda
+
+
+++-⋉-exchangel : ∀ (xs ys zs : List A) → (xs ++ ys) ⋉ zs ≡ ys ⋉ (xs ⋉ zs)
+++-⋉-exchangel [] ys zs = refl
+++-⋉-exchangel (x ∷ xs) ys zs =  ++-⋉-exchangel xs ys (x ∷ zs) 
+
+++-⋉-pulll : ∀ (xs ys zs : List A) → xs ⋉ (ys ++ zs) ≡ (xs ⋉ ys) ++ zs
+++-⋉-pulll [] ys zs = refl
+++-⋉-pulll (x ∷ xs) ys zs = ++-⋉-pulll xs (x ∷ ys) zs
+
+⋉-reverse-++ : ∀ (xs ys : List A) → xs ⋉ ys ≡ reverse xs ++ ys
+⋉-reverse-++ xs ys = ++-⋉-pulll xs [] ys
+
+reverse-++ : ∀ (xs ys : List A) → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
+reverse-++ xs ys =
+    reverse (xs ++ ys)       ≡⟨ ++-⋉-exchangel xs ys [] ⟩ 
+    ys ⋉ reverse xs          ≡⟨ ⋉-reverse-++ ys (reverse xs) ⟩ 
+    reverse ys ++ reverse xs ∎ 
+    
+reverse-⋉ : ∀ (xs ys : List A) → reverse (xs ⋉ ys) ≡ ys ⋉ xs -- {! ys ⋉ xs !}
+reverse-⋉ [] ys = refl
+reverse-⋉ (x ∷ xs) ys = reverse-⋉ xs (x ∷ ys)
+
+reverse-reverse : ∀ (xs : List A) → reverse (reverse xs) ≡ xs
+reverse-reverse xs = reverse-⋉ xs []
+```
+
 <!--
 ⚠️ TODO: Explain these ⚠️
 
